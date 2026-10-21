@@ -1,0 +1,89 @@
+#!/bin/sh
+set -eu
+
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+server="$here/../dist/server.mjs"
+
+NODE_VERSION=v22.23.3
+# From https://nodejs.org/dist/v22.23.3/SHASUMS256.txt
+sum_linux_x64=df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de
+sum_linux_arm64=a44aeb94849a299b22df10b9e622ec2f605c2183501bc40590705131de7c740f
+sum_darwin_x64=8a677b0219178efd6eb0e475457c4afb452b521a92f6e67845a73bd85727f2a8
+sum_darwin_arm64=23b25245dcfb9af7262f8ff142e9e2e0af025368117329e7a7458a51e5922f53
+
+# stdout is the MCP channel: anything else printed there breaks the protocol.
+log() { printf 'construtor-ploomes: %s\n' "$*" >&2; }
+
+case $(uname -s) in
+  Darwin) os=darwin; cache="$HOME/Library/Caches/construtor-ploomes" ;;
+  *)      os=linux;  cache="${XDG_CACHE_HOME:-$HOME/.cache}/construtor-ploomes" ;;
+esac
+case $(uname -m) in
+  x86_64|amd64)  arch=x64 ;;
+  aarch64|arm64) arch=arm64 ;;
+  *) arch=$(uname -m) ;;
+esac
+
+# The scaffold's Vite requires Node 20.19+ or 22.12+.
+serves() {
+  [ -x "$1" ] || return 1
+  "$1" -e 'const [a,b]=process.versions.node.split(".").map(Number); process.exit((a===20&&b>=19)||(a===22&&b>=12)||a>22 ? 0 : 1)' >/dev/null 2>&1
+}
+
+find_node() {
+  if [ -n "${CONSTRUTOR_PLOOMES_NODE:-}" ] && serves "$CONSTRUTOR_PLOOMES_NODE"; then
+    printf '%s' "$CONSTRUTOR_PLOOMES_NODE"; return 0
+  fi
+  if n=$(command -v node 2>/dev/null) && serves "$n"; then
+    printf '%s' "$n"; return 0
+  fi
+  # A glob with no match stays literal and fails the -x test.
+  for c in \
+    "$HOME"/.nvm/versions/node/v2[2-9]*/bin/node "$HOME"/.nvm/versions/node/v20*/bin/node \
+    "$HOME"/.local/share/fnm/node-versions/v2*/installation/bin/node \
+    "$HOME"/Library/Application\ Support/fnm/node-versions/v2*/installation/bin/node \
+    "$HOME"/.volta/tools/image/node/2*/bin/node \
+    /opt/homebrew/bin/node /usr/local/bin/node /usr/bin/node \
+    "$cache"/node/node-*/bin/node
+  do
+    if serves "$c"; then printf '%s' "$c"; return 0; fi
+  done
+  return 1
+}
+
+download_node() {
+  case "$os-$arch" in
+    linux-x64)    sum=$sum_linux_x64;    file="node-$NODE_VERSION-linux-x64.tar.xz" ;;
+    linux-arm64)  sum=$sum_linux_arm64;  file="node-$NODE_VERSION-linux-arm64.tar.xz" ;;
+    darwin-x64)   sum=$sum_darwin_x64;   file="node-$NODE_VERSION-darwin-x64.tar.gz" ;;
+    darwin-arm64) sum=$sum_darwin_arm64; file="node-$NODE_VERSION-darwin-arm64.tar.gz" ;;
+    *) log "no portable Node for $os-$arch; install Node 22 and try again"; return 1 ;;
+  esac
+  url="https://nodejs.org/dist/$NODE_VERSION/$file"
+  mkdir -p "$cache/node"
+  tmp="$cache/node/$file.baixando.$$"
+  log "no Node 20.19+/22.12+ found; downloading $file to $cache/node"
+  if command -v curl >/dev/null 2>&1; then curl -fsSL -o "$tmp" "$url"
+  elif command -v wget >/dev/null 2>&1; then wget -qO "$tmp" "$url"
+  else log "curl or wget is needed to download Node"; return 1
+  fi
+  if command -v sha256sum >/dev/null 2>&1; then got=$(sha256sum "$tmp" | cut -d' ' -f1)
+  else got=$(shasum -a 256 "$tmp" | cut -d' ' -f1)
+  fi
+  if [ "$got" != "$sum" ]; then rm -f "$tmp"; log "the download's sha256 does not match; nothing was installed"; return 1; fi
+  case $file in
+    *.tar.xz) tar -xJf "$tmp" -C "$cache/node" ;;
+    *)        tar -xzf "$tmp" -C "$cache/node" ;;
+  esac
+  rm -f "$tmp"
+  printf '%s' "$cache/node/${file%.tar.*}/bin/node"
+}
+
+# Checking a Node's version starts it once more, and every hook pays for that; so the Node that passed is remembered.
+remembered="$cache/node-path"
+if [ -z "${CONSTRUTOR_PLOOMES_NODE:-}" ] && [ -r "$remembered" ] && node=$(cat "$remembered") && [ -x "$node" ]; then
+  exec "$node" "$server" "$@"
+fi
+node=$(find_node) || node=$(download_node) || exit 1
+{ mkdir -p "$cache" && printf '%s' "$node" > "$remembered"; } 2>/dev/null || true
+exec "$node" "$server" "$@"

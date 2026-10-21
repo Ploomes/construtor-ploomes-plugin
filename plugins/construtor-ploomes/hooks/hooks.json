@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes\" hook session --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes\" hook prompt --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Bash|Edit|MultiEdit|Write|NotebookEdit|Read|Grep|Glob|mcp__plugin_construtor-ploomes_ploomes_api__write", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes\" hook guard --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 15 }] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Edit|MultiEdit|Write|NotebookEdit", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes\" hook wrote --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes\" hook stop --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 600 }] }
+    ]
+  }
+}

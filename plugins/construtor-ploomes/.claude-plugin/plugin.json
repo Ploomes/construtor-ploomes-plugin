@@ -1,0 +1,94 @@
+{
+  "name": "construtor-ploomes",
+  "version": "0.7.0",
+  "description": "Construtor Ploomes no Claude Code: crie telas, formulários de CPQ e fluxos no CRM de um cliente conversando, com preview local, uma versão a cada turno, o menu de versões e a publicação.",
+  "author": {
+    "name": "Ploomes"
+  },
+  "mcpServers": {
+    "ploomes-construtor": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "mcp"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "ploomes_api": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "bridge",
+        "ploomes_api"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "ploomes_brain": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "bridge",
+        "ploomes_brain"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "ploomes_flows": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "bridge",
+        "ploomes_flows"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "aibuilder": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "bridge",
+        "aibuilder"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "ploomes_credentials": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "bridge",
+        "ploomes_credentials"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "ploomes_tasks": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "args": [
+        "bridge",
+        "ploomes_tasks"
+      ],
+      "env": {
+        "CONSTRUTOR_PLOOMES_DATA": "${CLAUDE_PLUGIN_DATA}"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.78",
+        "--headless",
+        "--browser",
+        "chrome",
+        "--isolated",
+        "--viewport-size",
+        "1440x900",
+        "--output-dir",
+        "${CLAUDE_PLUGIN_DATA}/playwright"
+      ]
+    }
+  }
+}
