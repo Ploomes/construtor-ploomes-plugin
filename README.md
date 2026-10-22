@@ -7,7 +7,7 @@ Plugin do Claude Code para construir no CRM de um cliente da Ploomes conversando
 No Claude Code:
 
 ```
-/plugin marketplace add Ploomes/ploomes-construtor-plugin
+/plugin marketplace add Ploomes/construtor-ploomes-plugin
 /plugin install construtor-ploomes@construtor-ploomes
 ```
 

@@ -1,13 +1,13 @@
 {
   "name": "construtor-ploomes",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Construtor Ploomes no Claude Code: crie telas, formulários de CPQ e fluxos no CRM de um cliente conversando, com preview local, uma versão a cada turno, o menu de versões e a publicação.",
   "author": {
     "name": "Ploomes"
   },
   "mcpServers": {
     "ploomes-construtor": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "mcp"
       ],
@@ -16,7 +16,7 @@
       }
     },
     "ploomes_api": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "bridge",
         "ploomes_api"
@@ -26,7 +26,7 @@
       }
     },
     "ploomes_brain": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "bridge",
         "ploomes_brain"
@@ -36,7 +36,7 @@
       }
     },
     "ploomes_flows": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "bridge",
         "ploomes_flows"
@@ -46,7 +46,7 @@
       }
     },
     "aibuilder": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "bridge",
         "aibuilder"
@@ -56,7 +56,7 @@
       }
     },
     "ploomes_credentials": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "bridge",
         "ploomes_credentials"
@@ -66,7 +66,7 @@
       }
     },
     "ploomes_tasks": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/construtor-ploomes",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes",
       "args": [
         "bridge",
         "ploomes_tasks"
