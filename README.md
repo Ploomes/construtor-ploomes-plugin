@@ -11,13 +11,19 @@ No Claude Code:
 /plugin install construtor-ploomes@construtor-ploomes
 ```
 
+Depois, rode `/reload-plugins` ou abra uma conversa nova, para o plugin carregar.
+
 Se a sua organização já cadastrou este marketplace, o Construtor Ploomes aparece direto na lista de plugins do Claude Code.
+
+### No Claude Code Desktop
+
+O Desktop usa os plugins instalados no Claude Code da mesma máquina. Instale pelo terminal, com os comandos acima, e abra uma conversa nova no Desktop. Lá, a página de login e a página do Construtor abrem no painel Browser, ao lado da conversa, e não no navegador.
 
 ## O que você precisa
 
 - **Claude Code.**
-- **Um usuário de integração na conta do cliente, com perfil de administrador.** Ele fica em Ploomes › Administração › Usuários de integração. A User-Key desse usuário vai na página de login da Ploomes, que o plugin abre no navegador. Ela nunca vai na conversa.
-- **Node.js: não precisa instalar.** O plugin procura um Node 20.19 ou 22.12 (ou mais novo) na máquina. Se não achar, baixa o Node oficial, confere a assinatura (sha256) e usa essa cópia.
+- **Um usuário de integração na conta do cliente, com perfil de administrador.** Ele fica em Ploomes › Administração › Usuários de integração. A User-Key desse usuário vai na página de login da Ploomes, que o plugin abre no navegador (no Desktop, no painel Browser). Ela nunca vai na conversa.
+- **Node.js: não precisa instalar.** O plugin procura um Node 20.19 ou 22.12 (ou mais novo) na máquina. Se não achar, baixa o Node oficial, confere o hash (sha256) do arquivo e usa essa cópia.
 
 ## Como começar
 
