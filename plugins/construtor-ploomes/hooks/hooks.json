@@ -7,7 +7,7 @@
       { "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook prompt --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }
     ],
     "PreToolUse": [
-      { "matcher": "Bash|Edit|MultiEdit|Write|NotebookEdit|Read|Grep|Glob|mcp__plugin_construtor-ploomes_ploomes_api__write", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook guard --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 15 }] }
+      { "matcher": "Bash|Edit|MultiEdit|Write|NotebookEdit|Read|Grep|Glob|mcp__plugin_construtor-ploomes_ploomes_api__write|mcp__remote-devices__plugin_construtor-ploomes_.*", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook guard --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 15 }] }
     ],
     "PostToolUse": [
       { "matcher": "Edit|MultiEdit|Write|NotebookEdit", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook wrote --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }
