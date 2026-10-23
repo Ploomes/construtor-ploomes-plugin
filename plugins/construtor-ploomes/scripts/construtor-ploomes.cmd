@@ -23,8 +23,10 @@ exit /b %errorlevel%
 :download
 rem stdout is the MCP channel: every message goes to stderr.
 set "file=node-%NODE_VERSION%-win-x64.zip"
-echo construtor-ploomes: no Node 20.19+/22.12+ found; downloading %file% to %cache% 1>&2
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $u='https://nodejs.org/dist/%NODE_VERSION%/%file%'; $t=Join-Path $env:TEMP '%file%'; Invoke-WebRequest -Uri $u -OutFile $t; if ((Get-FileHash $t -Algorithm SHA256).Hash -ne '%SUM_WIN_X64%') { Remove-Item $t; throw 'the download sha256 does not match' }; New-Item -ItemType Directory -Force -Path '%cache%' | Out-Null; Expand-Archive -Path $t -DestinationPath '%cache%' -Force; Remove-Item $t" 1>&2
+set "logdir=%CONSTRUTOR_PLOOMES_STATE_DIR%"
+if not defined logdir set "logdir=%CONSTRUTOR_PLOOMES_DATA%"
+if not defined logdir set "logdir=%CLAUDE_PLUGIN_DATA%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $ProgressPreference='SilentlyContinue'; function Say($m) { [Console]::Error.WriteLine('construtor-ploomes: ' + $m); if ($env:logdir) { try { New-Item -ItemType Directory -Force -Path $env:logdir | Out-Null; Add-Content -Path (Join-Path $env:logdir 'construtor-ploomes.log') -Value ((Get-Date).ToUniversalTime().ToString('s') + 'Z ' + $PID + ' [launcher] ' + $m) } catch {} } }; Say 'no Node 20.19+/22.12+ found; downloading %file% to %cache%'; $u='https://nodejs.org/dist/%NODE_VERSION%/%file%'; $t=Join-Path $env:TEMP '%file%'; try { Invoke-WebRequest -Uri $u -OutFile $t } catch { Remove-Item $t -ErrorAction SilentlyContinue; Say 'could not download Node from nodejs.org; check the internet connection, or install Node 22, and try again'; exit 1 }; if ((Get-FileHash $t -Algorithm SHA256).Hash -ne '%SUM_WIN_X64%') { Remove-Item $t; Say 'the download sha256 does not match; nothing was installed'; exit 1 }; New-Item -ItemType Directory -Force -Path '%cache%' | Out-Null; Expand-Archive -Path $t -DestinationPath '%cache%' -Force; Remove-Item $t" 1>&2
 if errorlevel 1 exit /b 1
 set "node=%cache%\node-%NODE_VERSION%-win-x64\node.exe"
 exit /b 0

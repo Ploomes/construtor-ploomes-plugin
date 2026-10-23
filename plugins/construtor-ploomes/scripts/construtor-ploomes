@@ -12,7 +12,13 @@ sum_darwin_x64=8a677b0219178efd6eb0e475457c4afb452b521a92f6e67845a73bd85727f2a8
 sum_darwin_arm64=23b25245dcfb9af7262f8ff142e9e2e0af025368117329e7a7458a51e5922f53
 
 # stdout is the MCP channel: anything else printed there breaks the protocol.
-log() { printf 'construtor-ploomes: %s\n' "$*" >&2; }
+# The lines also go to the server's log file (state.ts stateDir), where a start that failed can be read later.
+log() {
+  printf 'construtor-ploomes: %s\n' "$*" >&2
+  logdir=${CONSTRUTOR_PLOOMES_STATE_DIR:-${CONSTRUTOR_PLOOMES_DATA:-${CLAUDE_PLUGIN_DATA:-}}}
+  [ -n "$logdir" ] || return 0
+  { mkdir -p "$logdir" && (umask 077; printf '%s %s [launcher] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$$" "$*" >> "$logdir/construtor-ploomes.log"); } 2>/dev/null || true
+}
 
 case $(uname -s) in
   Darwin) os=darwin; cache="$HOME/Library/Caches/construtor-ploomes" ;;
@@ -63,8 +69,10 @@ download_node() {
   mkdir -p "$cache/node"
   tmp="$cache/node/$file.baixando.$$"
   log "no Node 20.19+/22.12+ found; downloading $file to $cache/node"
-  if command -v curl >/dev/null 2>&1; then curl -fsSL -o "$tmp" "$url"
-  elif command -v wget >/dev/null 2>&1; then wget -qO "$tmp" "$url"
+  offline="could not download Node from nodejs.org; check the internet connection, or install Node 22, and try again"
+  # set -e does not apply inside a function called with ||, so each failure returns here.
+  if command -v curl >/dev/null 2>&1; then curl -fsSL -o "$tmp" "$url" || { rm -f "$tmp"; log "$offline"; return 1; }
+  elif command -v wget >/dev/null 2>&1; then wget -qO "$tmp" "$url" || { rm -f "$tmp"; log "$offline"; return 1; }
   else log "curl or wget is needed to download Node"; return 1
   fi
   if command -v sha256sum >/dev/null 2>&1; then got=$(sha256sum "$tmp" | cut -d' ' -f1)
