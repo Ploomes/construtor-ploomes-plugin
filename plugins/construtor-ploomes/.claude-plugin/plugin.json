@@ -1,6 +1,6 @@
 {
   "name": "construtor-ploomes",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "description": "Construtor Ploomes no Claude Code: crie telas, formulários de CPQ e fluxos no CRM de um cliente conversando, com preview local, uma versão a cada turno, o menu de versões e a publicação.",
   "author": {
     "name": "Ploomes"
