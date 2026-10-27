@@ -67,10 +67,12 @@ download_node() {
   esac
   url="https://nodejs.org/dist/$NODE_VERSION/$file"
   mkdir -p "$cache/node"
+  # A launcher stopped mid-download or mid-unpack (a hook's timeout) leaves its file or folder behind.
+  find "$cache/node" -maxdepth 1 \( -name '*.baixando.*' -o -name '*.extraindo.*' \) -mmin +15 -exec rm -rf {} + 2>/dev/null || true
   tmp="$cache/node/$file.baixando.$$"
   log "no Node 20.19+/22.12+ found; downloading $file to $cache/node"
   offline="could not download Node from nodejs.org; check the internet connection, or install Node 22, and try again"
-  # set -e does not apply inside a function called with ||, so each failure returns here.
+  # In this subshell dash keeps set -e and bash drops it, so each failure is handled where it happens.
   if command -v curl >/dev/null 2>&1; then curl -fsSL -o "$tmp" "$url" || { rm -f "$tmp"; log "$offline"; return 1; }
   elif command -v wget >/dev/null 2>&1; then wget -qO "$tmp" "$url" || { rm -f "$tmp"; log "$offline"; return 1; }
   else log "curl or wget is needed to download Node"; return 1
@@ -79,12 +81,36 @@ download_node() {
   else got=$(shasum -a 256 "$tmp" | cut -d' ' -f1)
   fi
   if [ "$got" != "$sum" ]; then rm -f "$tmp"; log "the download's sha256 does not match; nothing was installed"; return 1; fi
+  dir=${file%.tar.*}
+  unpacking="$cache/node/$dir.extraindo.$$"
+  rm -rf "$unpacking" && mkdir -p "$unpacking"
   case $file in
-    *.tar.xz) tar -xJf "$tmp" -C "$cache/node" ;;
-    *)        tar -xzf "$tmp" -C "$cache/node" ;;
-  esac
+    *.tar.xz) tar -xJf "$tmp" -C "$unpacking" ;;
+    *)        tar -xzf "$tmp" -C "$unpacking" ;;
+  esac || { rm -rf "$unpacking" "$tmp"; log "could not unpack $file; install Node 22 (or xz, which a .tar.xz needs) and try again"; return 1; }
   rm -f "$tmp"
-  printf '%s' "$cache/node/${file%.tar.*}/bin/node"
+  if ! serves "$unpacking/$dir/bin/node"; then rm -rf "$unpacking"; log "the Node unpacked from $file does not run on this machine; install Node 22 and try again"; return 1; fi
+  # The MCP servers start together; without the lock one could delete the Node another just installed and is about to run.
+  lock="$cache/node/.instalando"
+  tries=0
+  until mkdir "$lock" 2>/dev/null; do
+    # A launcher killed while holding the lock leaves it behind; holding it takes a second or two.
+    find "$cache/node" -maxdepth 1 -name .instalando -mmin +1 -exec rmdir {} + 2>/dev/null || true
+    tries=$((tries + 1))
+    if [ "$tries" -ge 450 ]; then
+      rm -rf "$unpacking"
+      if serves "$cache/node/$dir/bin/node"; then printf '%s' "$cache/node/$dir/bin/node"; return 0; fi
+      log "another start of Construtor Ploomes is still installing Node in $cache/node; try again"; return 1
+    fi
+    sleep 0.2
+  done
+  if ! serves "$cache/node/$dir/bin/node"; then
+    rm -rf "$cache/node/$dir"
+    mv "$unpacking/$dir" "$cache/node/$dir" || { rmdir "$lock" 2>/dev/null || true; rm -rf "$unpacking"; log "could not move the unpacked Node into $cache/node; install Node 22 and try again"; return 1; }
+  fi
+  rmdir "$lock" 2>/dev/null || true
+  rm -rf "$unpacking"
+  printf '%s' "$cache/node/$dir/bin/node"
 }
 
 # Checking a Node's version starts it once more, and every hook pays for that; so the Node that passed is remembered.
