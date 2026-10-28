@@ -13,7 +13,9 @@ No Claude Code:
 
 Depois, rode `/reload-plugins` ou abra uma conversa nova, para o plugin carregar.
 
-Se a sua organização já cadastrou este marketplace, o Construtor Ploomes aparece direto na lista de plugins do Claude Code.
+Instalar não pede login. A página de login abre no seu primeiro pedido ao Construtor, ou quando você roda `/construtor-ploomes:conectar`.
+
+Se a sua organização já cadastrou este marketplace, o Construtor Ploomes aparece direto na lista de plugins do Claude Code. Nesse caso, não instale também pelo terminal: as duas cópias aparecem lado a lado na lista de plugins.
 
 ### No Claude Code Desktop
 
@@ -29,10 +31,13 @@ O Desktop usa os plugins instalados no Claude Code da mesma máquina. Instale pe
 
 1. Abra o Claude Code numa pasta vazia, que vai guardar o que você construir.
 2. Peça o que quer, por exemplo "uma tela com os negócios abertos do mês".
-3. Na primeira vez, a página de login da Ploomes abre no navegador. Cole a User-Key e confirme.
+3. Na primeira vez, a página de login da Ploomes abre no navegador. Cole a User-Key e confirme. Para conectar antes de pedir algo, rode `/construtor-ploomes:conectar`.
+
+Enquanto nenhuma conta estiver conectada, o Claude Code avisa disso ao abrir: na primeira conversa depois de instalar e, depois, nas conversas abertas numa pasta vazia ou numa pasta do Construtor.
 
 Comandos do plugin:
 
+- `/construtor-ploomes:conectar`: abre a página de login da Ploomes.
 - `/construtor-ploomes:ajuda`: o que dá para pedir e os comandos.
 - `/construtor-ploomes:artefatos`: as telas e os formulários de CPQ da conta.
 - `/construtor-ploomes:status`: a conta conectada, a pasta e a tela ativa.
