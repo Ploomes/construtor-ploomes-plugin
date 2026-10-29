@@ -2,6 +2,11 @@
 set -eu
 
 here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+# On Windows, Claude Code runs the hooks through Git Bash; the .cmd finds and downloads the Windows Node.
+case $(uname -s) in
+  MINGW*|MSYS*|CYGWIN*) exec "$here/construtor-ploomes.cmd" "$@" ;;
+esac
 server="$here/../dist/server.mjs"
 
 NODE_VERSION=v22.23.3
