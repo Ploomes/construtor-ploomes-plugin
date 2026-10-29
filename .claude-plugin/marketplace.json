@@ -7,6 +7,7 @@
   "plugins": [
     {
       "name": "construtor-ploomes",
+      "displayName": "Construtor Ploomes",
       "source": "./plugins/construtor-ploomes",
       "description": "Construtor Ploomes no Claude Code: telas, formulários de CPQ e fluxos no CRM de um cliente, com preview local, uma versão a cada turno e publicação."
     }
