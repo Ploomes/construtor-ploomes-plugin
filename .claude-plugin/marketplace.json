@@ -1,6 +1,8 @@
 {
-  "name": "construtor-ploomes",
-  "owner": { "name": "Ploomes" },
+  "name": "construtor-ploomes-dev",
+  "owner": {
+    "name": "Ploomes"
+  },
   "metadata": {
     "description": "Marketplace da Ploomes com o plugin Construtor Ploomes para o Claude Code."
   },

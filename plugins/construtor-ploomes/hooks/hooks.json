@@ -7,7 +7,8 @@
       { "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook prompt --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }
     ],
     "PreToolUse": [
-      { "matcher": "Bash|Edit|MultiEdit|Write|NotebookEdit|Read|Grep|Glob|mcp__plugin_construtor-ploomes_ploomes_api__write|mcp__remote-devices__plugin_construtor-ploomes_.*", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook guard --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 15 }] }
+      { "matcher": "Bash|Edit|MultiEdit|Write|NotebookEdit|Read|Grep|Glob|mcp__plugin_construtor-ploomes_ploomes_api__write|mcp__remote-devices__plugin_construtor-ploomes_.*|mcp__plugin_construtor-ploomes_playwright__browser_(click|type|press_key|fill_form|select_option|drag|drop|evaluate|run_code_unsafe|file_upload)|mcp__(Claude_Browser|claude-in-chrome|Claude_in_Chrome)__(form_input|javascript_tool|browser_batch|file_upload)|mcp__plugin_chrome-devtools-mcp_chrome-devtools__(click|fill|fill_form|press_key|type_text|drag|upload_file|evaluate_script|handle_dialog)", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook guard --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 15 }] },
+      { "matcher": "mcp__(Claude_Browser|claude-in-chrome|Claude_in_Chrome)__computer", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook guard-computer --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 15 }] }
     ],
     "PostToolUse": [
       { "matcher": "Edit|MultiEdit|Write|NotebookEdit", "hooks": [{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/construtor-ploomes\" hook wrote --state-dir \"${CLAUDE_PLUGIN_DATA}\"", "timeout": 10 }] }

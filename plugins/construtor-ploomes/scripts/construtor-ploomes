@@ -1,6 +1,31 @@
 #!/bin/sh
 set -eu
 
+once() {
+  case $1 in *"$2"*"$2"*) return 1 ;; *"$2"*) return 0 ;; esac
+  return 1
+}
+
+# Read as text, without jq: whatever this can't be sure of goes on to Node, where the daemon decides (daemon.ts isPageInput).
+only_looks() {
+  case $1 in *'\u'* | *'\"'* | *'"path":'* | *'"file_path":'* | *'"notebook_path":'*) return 1 ;; esac
+  once "$1" '"tool_name":' && once "$1" '"action":' || return 1
+  case $1 in *'"tool_name":"mcp__Claude_Browser__computer"'* | *'"tool_name":"mcp__claude-in-chrome__computer"'* | *'"tool_name":"mcp__Claude_in_Chrome__computer"'*) ;; *) return 1 ;; esac
+  case $1 in *'"action":"screenshot"'* | *'"action":"zoom"'* | *'"action":"scroll"'* | *'"action":"scroll_to"'* | *'"action":"wait"'* | *'"action":"hover"'*) return 0 ;; esac
+  return 1
+}
+
+# The guard hook runs on every screenshot in every conversation, and starting Node costs far more than this test.
+if [ "${1:-}" = hook ] && [ "${2:-}" = guard-computer ]; then
+  shift 2
+  set -- hook guard "$@"
+  payload=$(cat)
+  if only_looks "$payload"; then exit 0; fi
+  exec <<EOF
+$payload
+EOF
+fi
+
 here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 # On Windows, Claude Code runs the hooks through Git Bash; the .cmd finds and downloads the Windows Node.
