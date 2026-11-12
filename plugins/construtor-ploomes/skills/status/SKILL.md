@@ -7,9 +7,10 @@ description: Mostra a conta conectada ao Construtor Ploomes, a pasta desta conve
 
 Call `mcp__plugin_construtor-ploomes_ploomes-construtor__account_info` and summarize it in a few lines, in Brazilian Portuguese (pt-BR):
 
+- the plugin version and its channel (dev or production), exactly as the tool gives them;
 - the account and the user (and, if it is a regular user, that their key changes every time they sign in);
 - this conversation's folder;
 - the artifacts on this machine and the active one;
-- the builder API, Ploomes Flows and the harness (the installed version and, if the API already serves a newer one, that `atualizar_harness` fetches it).
+- the builder API and its address, Ploomes Flows and the harness (the installed version and, if the API already serves a newer one, that `atualizar_harness` fetches it).
 
 If the tool answers that the account isn't connected, pass its message on, with the address of the Ploomes login page.
