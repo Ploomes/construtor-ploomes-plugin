@@ -11,6 +11,7 @@ Call `mcp__plugin_construtor-ploomes_ploomes-construtor__account_info` and summa
 - the account and the user (and, if it is a regular user, that their key changes every time they sign in);
 - this conversation's folder;
 - the artifacts on this machine and the active one;
-- the builder API and its address, Ploomes Flows and the harness (the installed version and, if the API serves another one, whether it is newer or older and that `atualizar_harness` replaces the installed one with it).
+- the builder API, its address and whether it answered (if it didn't, say that nothing can be saved or published now, and don't say the plugin is ready);
+- Ploomes Flows and the harness (the installed version and, if the API serves another one, whether it is newer or older and that `atualizar_harness` replaces the installed one with it).
 
 If the tool answers that the account isn't connected, pass its message on, with the address of the Ploomes login page.
